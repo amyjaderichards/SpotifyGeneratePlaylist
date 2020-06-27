@@ -1,5 +1,5 @@
 # SpotifyGeneratePlaylist
-This is my code used for the (https://github.com/TheComeUpCode/SpotifyGeneratePlaylist)[SpotifyGeneratePlaylist project by TheComeUpCode]
+This is my code used for the [SpotifyGeneratePlaylist project by TheComeUpCode](https://github.com/TheComeUpCode/SpotifyGeneratePlaylist)
 
 "A simple script that takes your liked videos on YouTube, and generates a Spotify playlist based on the song in your liked videos"
 
