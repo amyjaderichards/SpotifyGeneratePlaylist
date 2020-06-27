@@ -47,7 +47,36 @@ class CreatePlaylist:
 
     # Step 2: Grab the liked videos
     def get_liked_videos(self):
-        pass
+        """ Grab our liked videos and create a dictionary of important song information """
+        request = self.get_youtube_client().list(
+            part="snipper, contentDetails, statistics",
+            myRating="like"
+        )
+        response = request.execute()
+
+        # Collect each video and get important information
+        for item in response["items"]:
+            video_title = item["snippet"]["title"]
+            youtube_url = "https://www.youtube.com/watch?v={}".format(
+                item["id"]
+            )
+
+            # Use youtube_dl to collect the song name and artist name
+            video = youtube_dl.YoutubeDL({}).extract_info(
+                youtube_url, download=False)
+            song_name = video["track"]
+            artist = video["artist"]
+
+            if song_name is not None and artist is not None:
+                # Save all important info and skip any missing song and artist
+                self.all_song_info[video_title] = {
+                    "youtube_url": youtube_url,
+                    "song_name": song_name,
+                    "artist": artist,
+
+                    # Add the url, easy to get song to put into playlist
+                    "spotify-url": self.get_spotify_url(song_name, artist)
+                }
 
     # Step 3: Create a new Playlist
     def create_playlist(self):
