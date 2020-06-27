@@ -41,11 +41,28 @@ class CreatePlaylist:
         )
         response_json = response.json()
         # Playlist id
-        return response_json("id")
+        return response_json["id"]
 
     # Step 4: Search for the Song
-    def get_spotify_url(self):
-        pass
+    def get_spotify_url(self, song_name, artist):
+        query = query = "https://api.spotify.com/v1/search?query=track%3A{}+artist%3A{}&type=track&offset=0&limit=20".format(
+            song_name,
+            artist
+        )
+
+        response = requests.get(
+            query,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(spotify_token)
+            }
+        )
+
+        response_json = response.json()
+        songs = response_json["tracks"]["items"]
+
+        # Only use the first song
+        uri = songs[0]["uri"]
 
     # Step 5: Add this song into the new Spotify playlist
     def add_song_to_playlist(self):
