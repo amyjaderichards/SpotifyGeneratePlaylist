@@ -11,3 +11,6 @@ This is my code used for the [SpotifyGeneratePlaylist project by TheComeUpCode](
 
 ## Setup
 Setup instructions can be found at the repository linked above
+
+## ToDo
+- I'd like to have the option of a particular YouTube playlist being turned to a Spotify playlist, not just liked videos
