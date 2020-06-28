@@ -20,8 +20,10 @@ from secrets import spotify_user_id, spotify_token
 class CreatePlaylist:
 
     def __init__(self):
+        self.youtube_client = self.get_youtube_client()
         self.user_id = spotify_user_id
         self.spotify_token = spotify_token
+        self.all_song_info = {}
 
     # Step 1: Log into YouTube
     def get_youtube_client(self):
@@ -75,7 +77,7 @@ class CreatePlaylist:
                     "artist": artist,
 
                     # Add the url, easy to get song to put into playlist
-                    "spotify-url": self.get_spotify_url(song_name, artist)
+                    "spotify-uri": self.get_spotify_url(song_name, artist)
                 }
 
     # Step 3: Create a new Playlist
@@ -122,4 +124,37 @@ class CreatePlaylist:
 
     # Step 5: Add this song into the new Spotify playlist
     def add_song_to_playlist(self):
-        pass
+        # Populate our songs dictionary
+        self.get_liked_videos()
+
+        # Collect all of uri
+        uris = [info["spotify_uri"]
+                for song, info in self.all_song_info.items()]
+
+        # Create a new playlist
+        playlist_id = self.create_playlist()
+
+        # Add all songs into new playlist
+        request_data = json.dumps(uris)
+
+        query = "https://apo.spotify.com/v1/playlists/{}/tracks".format(playlist_id)
+
+        response = requests.post(
+            query,
+            data=request_data,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(spotify_token)
+            }
+        )
+
+        # Check for valid response status
+        if response.status_code != 200:
+            raise ResponseException(response.status_code)
+
+        response_json = response.json()
+        return response.json
+
+if __name__ == '__main__':
+    cp = CreatePlaylist()
+    cp.add_song_to_playlist()
